@@ -1,9 +1,8 @@
 package stmobile.milkyway.calendar.domain
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import org.hibernate.annotations.Type
+import java.util.*
+import javax.persistence.*
 
 @Entity
 class Calendar (
@@ -12,7 +11,7 @@ class Calendar (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = -1L,
 
-    val coupleId: Long,
+    val coupleId: String,
 
     val date: String,
 

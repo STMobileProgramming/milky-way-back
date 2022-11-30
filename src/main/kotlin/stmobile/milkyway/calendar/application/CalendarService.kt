@@ -3,6 +3,7 @@ package stmobile.milkyway.calendar.application
 import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 import stmobile.milkyway.calendar.adapter.dto.CalendarUpload
+import stmobile.milkyway.calendar.adapter.dto.DateInfo
 import stmobile.milkyway.calendar.adapter.dto.MonthImages
 import stmobile.milkyway.calendar.domain.Calendar
 import stmobile.milkyway.calendar.domain.CalendarRepository
@@ -21,14 +22,25 @@ class CalendarService(
 
     fun getMonthImages(month: String) : List<MonthImages>{
         val id = SecurityUtil.getCurrentMemberId()
-        val coupleId = memberRepository.findCoupleIdById(id)
-        val month = YearMonth.parse(month, DateTimeFormatter.ofPattern("yyyy-MM")).toString()
-        return calendarRepository.findAllByDate(coupleId, month).map { modelMapper.map(it, MonthImages::class.java) }
+        val coupleId = memberRepository.findMemberById(id).coupleId
+        val calendars = calendarRepository.findAllByDate(coupleId, month)
+        var outputs: MutableList<MonthImages> = mutableListOf()
+        for(i in calendars.indices){
+            outputs.add(
+                MonthImages(
+                id = calendars[i].id,
+                date = calendars[i].date,
+                image = calendars[i].image
+            ))
+        }
+        return outputs
+//        return calendarRepository.findAllByDate(coupleId, month).stream().map { it ->  }
+//            .map { modelMapper.map(it, MonthImages::class.java) }
     }
 
     fun uploadImage(calendarUpload: CalendarUpload) : DefaultResponseDto {
         val id = SecurityUtil.getCurrentMemberId()
-        val coupleId = memberRepository.findCoupleIdById(id)
+        val coupleId = memberRepository.findMemberById(id).coupleId
         calendarRepository.save(Calendar(coupleId = coupleId,
                                             date = calendarUpload.date,
                                             image = calendarUpload.image,
@@ -37,4 +49,13 @@ class CalendarService(
         return DefaultResponseDto(true, "캘린더 업로드를 성공하였습니다.")
     }
 
+    fun getDateInfo(date: String) : DateInfo {
+        val calendar = calendarRepository.findByDate(date)
+        return DateInfo(
+            date = calendar.date,
+            image = calendar.image,
+            place = calendar.place,
+            description = calendar.description
+        )
+    }
 }

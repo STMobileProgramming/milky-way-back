@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import stmobile.milkyway.member.adapter.infra.dto.HomeInfo
 import stmobile.milkyway.response.adapter.dto.DefaultResponseDto
 import stmobile.milkyway.member.adapter.infra.dto.MemberInformation
 import stmobile.milkyway.member.adapter.infra.dto.ProfileAndNickname
@@ -18,12 +19,6 @@ class MemberController (
     private val memberInfo: MemberInfo,
 ){
 
-    @Operation(summary = "이미지 업로드")
-    @PostMapping("/member/image")
-    fun registerStoreImage(@RequestPart("image") image:MultipartFile): String {
-        return memberInfo.registerImage(image)
-    }
-
     @Operation(summary = "사용자 정보")
     @GetMapping("/member")
     fun getMemberInfo(): ResponseEntity<MemberInformation> {
@@ -32,7 +27,7 @@ class MemberController (
 
     @Operation(summary = "프로필 수정전 프로필,닉네임 넘겨받는 api")
     @GetMapping("/member/profile")
-    fun showProfile(): ResponseEntity<ProfileAndNickname> {
+    fun showProfile(): ResponseEntity<String?> {
         return ApiResponse.success(HttpStatus.OK, memberInfo.showProfile())
     }
 
@@ -40,6 +35,21 @@ class MemberController (
     @PutMapping("/member/profile")
     fun editProfile(@RequestBody profileAndNickname: ProfileAndNickname): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, memberInfo.editProfile(profileAndNickname))
+    }
+
+    @PostMapping("/couple/{code}")
+    fun makeCouple(@PathVariable code: String): ResponseEntity<DefaultResponseDto> {
+        return ApiResponse.success(HttpStatus.OK, memberInfo.makeCouple(code))
+    }
+
+    @PostMapping("/member/password")
+    fun editPassword(): ResponseEntity<DefaultResponseDto> {
+        return ApiResponse.success(HttpStatus.OK, memberInfo.editPassword())
+    }
+
+    @PostMapping("/couple")
+    fun breakOffCouple(): ResponseEntity<DefaultResponseDto> {
+        return ApiResponse.success(HttpStatus.OK, memberInfo.breakOffCouple())
     }
 
 }

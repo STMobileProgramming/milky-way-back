@@ -33,6 +33,7 @@ class LoginService(
         val member = memberRepository.save(
             Member(
                 userId = signUpRequestDto.userId,
+                coupleId = UUID.randomUUID().toString(),
                 userName = signUpRequestDto.name,
                 password = passwordEncoder.encode(signUpRequestDto.password),
                 email = signUpRequestDto.email,

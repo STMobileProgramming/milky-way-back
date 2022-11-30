@@ -3,17 +3,18 @@ package stmobile.milkyway.member.application
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import stmobile.milkyway.aws.application.S3Uploader
+import stmobile.milkyway.member.adapter.infra.dto.HomeInfo
 import stmobile.milkyway.member.adapter.infra.dto.MemberInformation
 import stmobile.milkyway.member.adapter.infra.dto.ProfileAndNickname
 import stmobile.milkyway.member.domain.MemberRepository
 import stmobile.milkyway.response.adapter.dto.DefaultResponseDto
+import java.util.*
 
 @Service
 class MemberInfo (
     private val memberRepository: MemberRepository,
     private val s3Uploader: S3Uploader
 ){
-    private val defaultProfileImg: String = "https://onecake-image-bucket.s3.ap-northeast-2.amazonaws.com/472fe03a-20df-4a95-a614-ff0094b27034-Mask%20group.png"
 
     fun registerImage(multipartFile: MultipartFile): String {
         return s3Uploader.upload(multipartFile)
@@ -28,28 +29,53 @@ class MemberInfo (
         )
     }
 
-    fun showProfile() : ProfileAndNickname {
+    fun showProfile() : String? {
         val id = SecurityUtil.getCurrentMemberId()
         val member = memberRepository.getById(id)
 
-        return ProfileAndNickname(
-            profileImg = member.profileImg ?: defaultProfileImg,
-            nickname = member.userName
-        )
+        return member.profileImg
     }
 
     fun editProfile(profileAndNickname: ProfileAndNickname) : DefaultResponseDto {
         val id = SecurityUtil.getCurrentMemberId()
-        val member = memberRepository.getById(id)
-        if (member.profileImg != profileAndNickname.profileImg) {
-            member.profileImg = profileAndNickname.profileImg
-            memberRepository.save(member)
-        }
-        if (member.userName != profileAndNickname.nickname) {
-            member.userName = profileAndNickname.nickname
-            memberRepository.save(member)
-        }
+        val member = memberRepository.findMemberById(id)
+        member.profileImg = profileAndNickname.profileImg
+        memberRepository.save(member)
         return DefaultResponseDto(true, "프로필 수정이 완료됐습니다.")
     }
 
+    fun getHomeInfo(): HomeInfo {
+        val id = SecurityUtil.getCurrentMemberId()
+        val member = memberRepository.findMemberById(id)
+        val couple = memberRepository.findMemberByCoupleIdByIdNot(member.coupleId, id)
+        return HomeInfo(
+            myProfile = member.profileImg,
+            coupleProfile = couple?.profileImg,
+            startDay = member.startDay
+        )
+    }
+
+    fun makeCouple(code: String): DefaultResponseDto {
+        val id = SecurityUtil.getCurrentMemberId()
+        val originMember = memberRepository.findMemberByCode(code)
+        if (originMember != null) {
+            var member = memberRepository.findMemberById(id)
+            member.coupleId = originMember.coupleId
+            memberRepository.save(member)
+            return DefaultResponseDto(true, "커플이 연결되었습니다.")
+        }
+        return DefaultResponseDto(false, "일치하지 않는 코드입니다.")
+    }
+
+    fun editPassword(): DefaultResponseDto {
+        return DefaultResponseDto(true, "비밀번호가 변경되었습니다.")
+    }
+
+    fun breakOffCouple(): DefaultResponseDto {
+        val id = SecurityUtil.getCurrentMemberId()
+        val member = memberRepository.findMemberById(id)
+        member.coupleId = UUID.randomUUID().toString()
+        memberRepository.save(member)
+        return DefaultResponseDto(true, "커플 연결을 끊었습니다.")
+    }
 }

@@ -1,7 +1,9 @@
 package stmobile.milkyway.member.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 interface MemberRepository: JpaRepository<Member, Long> {
@@ -9,5 +11,12 @@ interface MemberRepository: JpaRepository<Member, Long> {
     fun findByUserId(userId:String): Member
     fun getByUserId(userId:String): Member
     fun existsByUserId(userId:String) : Boolean
-    fun findCoupleIdById(id: Long): Long
+
+    @Query(nativeQuery = true, value = """
+        select m
+        from member m
+        where m.couple_id = ?1 and m.id != ?2
+    """)
+    fun findMemberByCoupleIdByIdNot(coupleId: String, id:Long): Member?
+    fun findMemberByCode(code: String): Member?
 }
