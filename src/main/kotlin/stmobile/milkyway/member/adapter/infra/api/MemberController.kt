@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import stmobile.milkyway.member.adapter.infra.dto.CoupleInfo
 import stmobile.milkyway.member.adapter.infra.dto.HomeInfo
 import stmobile.milkyway.response.adapter.dto.DefaultResponseDto
 import stmobile.milkyway.member.adapter.infra.dto.MemberInformation
@@ -37,9 +38,9 @@ class MemberController (
         return ApiResponse.success(HttpStatus.OK, memberInfo.editProfile(profileAndNickname))
     }
 
-    @PostMapping("/couple/{code}")
-    fun makeCouple(@PathVariable code: String): ResponseEntity<DefaultResponseDto> {
-        return ApiResponse.success(HttpStatus.OK, memberInfo.makeCouple(code))
+    @PostMapping("/couple")
+    fun makeCouple(@RequestBody coupleInfo: CoupleInfo): ResponseEntity<DefaultResponseDto> {
+        return ApiResponse.success(HttpStatus.OK, memberInfo.makeCouple(coupleInfo))
     }
 
     @PostMapping("/member/password")
@@ -47,9 +48,14 @@ class MemberController (
         return ApiResponse.success(HttpStatus.OK, memberInfo.editPassword())
     }
 
-    @PostMapping("/couple")
+    @PostMapping("/couple/break")
     fun breakOffCouple(): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, memberInfo.breakOffCouple())
+    }
+
+    @GetMapping("/home")
+    fun getHome() : ResponseEntity<HomeInfo>{
+        return ApiResponse.success(HttpStatus.OK, memberInfo.getHomeInfo())
     }
 
 }

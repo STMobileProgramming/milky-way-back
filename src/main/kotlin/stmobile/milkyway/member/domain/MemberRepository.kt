@@ -13,10 +13,11 @@ interface MemberRepository: JpaRepository<Member, Long> {
     fun existsByUserId(userId:String) : Boolean
 
     @Query(nativeQuery = true, value = """
-        select m
+        select *
         from member m
-        where m.couple_id = ?1 and m.id != ?2
+        where m.couple_id = ?1
+        and m.id != ?2 
     """)
-    fun findMemberByCoupleIdByIdNot(coupleId: String, id:Long): Member?
+    fun findCouple(coupleId: String?, id:Long): Member?
     fun findMemberByCode(code: String): Member?
 }

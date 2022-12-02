@@ -24,7 +24,7 @@ class Member(
 
     var profileImg: String?,
 
-    val startDay: String?,
+    var startDay: String?,
 
     val code: String,
 

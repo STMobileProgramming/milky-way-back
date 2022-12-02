@@ -3,6 +3,7 @@ package stmobile.milkyway.member.application
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import stmobile.milkyway.aws.application.S3Uploader
+import stmobile.milkyway.member.adapter.infra.dto.CoupleInfo
 import stmobile.milkyway.member.adapter.infra.dto.HomeInfo
 import stmobile.milkyway.member.adapter.infra.dto.MemberInformation
 import stmobile.milkyway.member.adapter.infra.dto.ProfileAndNickname
@@ -47,7 +48,7 @@ class MemberInfo (
     fun getHomeInfo(): HomeInfo {
         val id = SecurityUtil.getCurrentMemberId()
         val member = memberRepository.findMemberById(id)
-        val couple = memberRepository.findMemberByCoupleIdByIdNot(member.coupleId, id)
+        val couple = memberRepository.findCouple(member.coupleId, id)
         return HomeInfo(
             myProfile = member.profileImg,
             coupleProfile = couple?.profileImg,
@@ -55,13 +56,16 @@ class MemberInfo (
         )
     }
 
-    fun makeCouple(code: String): DefaultResponseDto {
+    fun makeCouple(coupleInfo: CoupleInfo): DefaultResponseDto {
         val id = SecurityUtil.getCurrentMemberId()
-        val originMember = memberRepository.findMemberByCode(code)
+        val originMember = memberRepository.findMemberByCode(coupleInfo.code)
         if (originMember != null) {
             var member = memberRepository.findMemberById(id)
             member.coupleId = originMember.coupleId
+            member.startDay = coupleInfo.startDay
+            originMember.startDay = coupleInfo.startDay
             memberRepository.save(member)
+            memberRepository.save(originMember)
             return DefaultResponseDto(true, "커플이 연결되었습니다.")
         }
         return DefaultResponseDto(false, "일치하지 않는 코드입니다.")
