@@ -16,7 +16,7 @@ class LoginController (
 ){
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    fun signup(@RequestBody signUpRequestDto: SignUpRequestDto): ResponseEntity<SignUpResponseDto> {
+    fun signup(signUpRequestDto: SignUpRequestDto): ResponseEntity<SignUpResponseDto> {
         val signUpResponseDto: SignUpResponseDto = loginService.signup(signUpRequestDto)
         return if (signUpResponseDto.success) {
             ApiResponse.success(HttpStatus.OK, signUpResponseDto)
@@ -27,7 +27,7 @@ class LoginController (
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    fun login(@RequestBody loginRequestDto: LoginRequestDto): ResponseEntity<TokenDto> {
+    fun login(loginRequestDto: LoginRequestDto): ResponseEntity<TokenDto> {
         return ApiResponse.success(
             HttpStatus.OK,
             loginService.login(loginRequestDto)

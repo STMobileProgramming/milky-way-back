@@ -25,7 +25,7 @@ class CalendarController(
     }
 
     @PostMapping("")
-    fun postCalendar(@RequestBody calendarUpload: CalendarUpload): ResponseEntity<DefaultResponseDto> {
+    fun postCalendar(calendarUpload: CalendarUpload): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, calendarService.uploadImage(calendarUpload))
     }
 

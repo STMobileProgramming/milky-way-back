@@ -34,12 +34,12 @@ class MemberController (
 
     @Operation(summary = "프로필 수정하기")
     @PutMapping("/member/profile")
-    fun editProfile(@RequestBody profileAndNickname: ProfileAndNickname): ResponseEntity<DefaultResponseDto> {
+    fun editProfile(profileAndNickname: ProfileAndNickname): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, memberInfo.editProfile(profileAndNickname))
     }
 
     @PostMapping("/couple")
-    fun makeCouple(@RequestBody coupleInfo: CoupleInfo): ResponseEntity<DefaultResponseDto> {
+    fun makeCouple(coupleInfo: CoupleInfo): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, memberInfo.makeCouple(coupleInfo))
     }
 
