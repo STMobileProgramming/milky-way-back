@@ -8,6 +8,7 @@ import com.amazonaws.util.IOUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
+import stmobile.milkyway.aws.adapter.api.StringDto
 import java.io.ByteArrayInputStream
 import java.util.*
 
@@ -23,7 +24,7 @@ class S3Uploader (
 //    @Value("\${cloud.aws.s3.dir}")
 //    lateinit var dir: String
 
-    fun upload(file: MultipartFile): String {
+    fun upload(file: MultipartFile): StringDto {
         val fileName = UUID.randomUUID().toString() + "-" + file.originalFilename
         val objMeta = ObjectMetadata()
 
@@ -35,6 +36,6 @@ class S3Uploader (
         amazonS3Client.putObject(PutObjectRequest(bucket,  fileName, byteArrayIs, objMeta)
             .withCannedAcl(CannedAccessControlList.PublicRead))
 
-        return amazonS3Client.getUrl(bucket, fileName).toString()
+        return StringDto(amazonS3Client.getUrl(bucket, fileName).toString())
     }
 }

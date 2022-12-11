@@ -15,7 +15,7 @@ class S3ImageController (
 ){
     @Operation(summary = "AWS S3에 프로필 이미지 업로드")
     @PostMapping("/upload")
-    fun fileUpload(@RequestParam("image") multipartFile: MultipartFile): String {
+    fun fileUpload(@RequestParam("image") multipartFile: MultipartFile): StringDto {
         return s3Uploader.upload(multipartFile)
     }
 }

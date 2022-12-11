@@ -24,13 +24,23 @@ class CalendarController(
         return ApiResponse.success(HttpStatus.OK, calendarService.getMonthImages(month))
     }
 
+    @GetMapping("/date/{date}")
+    fun getDateInfo(@PathVariable date: String): ResponseEntity<DateInfo> {
+        return ApiResponse.success(HttpStatus.OK, calendarService.getDateInfo(date))
+    }
+
     @PostMapping("")
     fun postCalendar(calendarUpload: CalendarUpload): ResponseEntity<DefaultResponseDto> {
         return ApiResponse.success(HttpStatus.OK, calendarService.uploadImage(calendarUpload))
     }
 
-    @GetMapping("/date/{date}")
-    fun getDateInfo(@PathVariable date: String): ResponseEntity<DateInfo> {
-        return ApiResponse.success(HttpStatus.OK, calendarService.getDateInfo(date))
+//    @PutMapping("")
+//    fun putCalendar(calendarUpload: CalendarUpload): ResponseEntity<DefaultResponseDto> {
+//        return ApiResponse.success(HttpStatus.OK, calendarService.putCalendar(calendarUpload))
+//    }
+
+    @DeleteMapping("/date/{date}")
+    fun deleteCalendar(@PathVariable date: String): ResponseEntity<DefaultResponseDto> {
+        return ApiResponse.success(HttpStatus.OK, calendarService.deleteCalendar(date))
     }
 }

@@ -40,6 +40,10 @@ class CalendarService(
 
     fun uploadImage(calendarUpload: CalendarUpload) : DefaultResponseDto {
         val id = SecurityUtil.getCurrentMemberId()
+        val existedCalendar = calendarRepository.findByDate(calendarUpload.date)
+        if (existedCalendar != null) {
+            calendarRepository.delete(existedCalendar!!)
+        }
         val coupleId = memberRepository.findMemberById(id).coupleId
         calendarRepository.save(Calendar(coupleId = coupleId,
                                             date = calendarUpload.date,
@@ -52,10 +56,26 @@ class CalendarService(
     fun getDateInfo(date: String) : DateInfo {
         val calendar = calendarRepository.findByDate(date)
         return DateInfo(
-            date = calendar.date,
-            image = calendar.image,
-            place = calendar.place,
-            description = calendar.description
+            date = calendar?.date,
+            image = calendar?.image,
+            place = calendar?.place,
+            description = calendar?.description
         )
+    }
+
+//    fun putCalendar(calendarUpload: CalendarUpload): DefaultResponseDto {
+//        val calendar = calendarRepository.findByDate(calendarUpload.date)
+//        if(cale)
+//        calendar?.image = calendarUpload.image
+//        calendar?.description = calendarUpload.description
+//        calendar?.place = calendarUpload.place
+//        calendarRepository.save(calendar)
+//        return DefaultResponseDto(true, "캘린더 수정이 성공적으로 완료되었습니다")
+//    }
+
+    fun deleteCalendar(date: String): DefaultResponseDto {
+        val calendar = calendarRepository.findByDate(date)
+        calendarRepository.delete(calendar!!)
+        return DefaultResponseDto(true, "해당 날짜의 캘린더가 삭제되었습니다.")
     }
 }

@@ -17,9 +17,9 @@ class MemberInfo (
     private val s3Uploader: S3Uploader
 ){
 
-    fun registerImage(multipartFile: MultipartFile): String {
-        return s3Uploader.upload(multipartFile)
-    }
+//    fun registerImage(multipartFile: MultipartFile): String {
+//        return s3Uploader.upload(multipartFile)
+//    }
 
     fun getMemberInfo(): MemberInformation {
         val id = SecurityUtil.getCurrentMemberId()
@@ -81,5 +81,11 @@ class MemberInfo (
         member.coupleId = UUID.randomUUID().toString()
         memberRepository.save(member)
         return DefaultResponseDto(true, "커플 연결을 끊었습니다.")
+    }
+
+    fun getMyCoupleCode(): String{
+        val id = SecurityUtil.getCurrentMemberId()
+        val member = memberRepository.findMemberById(id)
+        return member.code
     }
 }

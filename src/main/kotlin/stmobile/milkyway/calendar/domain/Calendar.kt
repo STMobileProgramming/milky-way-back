@@ -15,10 +15,10 @@ class Calendar (
 
     val date: String,
 
-    val image: String?,
+    var image: String?,
 
-    val place: String?,
+    var place: String?,
 
-    val description: String?
+    var description: String?
 
 )

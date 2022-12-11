@@ -58,4 +58,9 @@ class MemberController (
         return ApiResponse.success(HttpStatus.OK, memberInfo.getHomeInfo())
     }
 
+    @GetMapping("code")
+    fun getMyCoupleCode(): ResponseEntity<String>{
+        return ApiResponse.success(HttpStatus.OK, memberInfo.getMyCoupleCode())
+    }
+
 }

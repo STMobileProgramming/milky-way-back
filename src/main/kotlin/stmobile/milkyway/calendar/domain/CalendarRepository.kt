@@ -15,5 +15,5 @@ interface CalendarRepository : JpaRepository<Calendar, Long> {
     """)
     fun findAllByDate(coupleId: String, month: String): List<Calendar>
 
-    fun findByDate(date: String): Calendar
+    fun findByDate(date: String): Calendar?
 }
